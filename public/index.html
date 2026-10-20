@@ -3,185 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shack • Generator v2.0</title>
+    <title>Shack • Ultimate Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            500: '#10b981',
-                            400: '#34d399',
-                            300: '#6ee7b7',
-                        }
-                    }
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
                 }
             }
         }
     </script>
     <style>
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.08); }
-        }
-        .glow-bg { animation: pulseGlow 6s infinite ease-in-out; }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .glass-card:hover {
-            border-color: rgba(16, 185, 129, 0.4);
-            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
-        }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.2s ease; }
+        .glass-card:hover { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.2); }
         .scrollbar-none::-webkit-scrollbar { display: none; }
-        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-emerald-500 selection:text-slate-950">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- Glowing Background Effects -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none glow-bg z-0"></div>
-    <div class="fixed bottom-0 right-0 w-[400px] h-[400px] bg-emerald-600/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
+    <!-- Bannière haut -->
+    <div class="bg-emerald-950/60 border-b border-emerald-500/20 py-2 px-4">
+        <div class="max-w-xl mx-auto flex items-center justify-between text-[11px]">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-emerald-400 font-bold uppercase tracking-wider">RESTOCK ACTIF</span>
+            </div>
+            <span class="text-slate-400 font-mono">Reset dans : <strong id="countdown" class="text-white">03h 45m</strong></span>
+        </div>
+    </div>
 
-    <div class="relative z-10 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="max-w-xl mx-auto w-full px-4 py-4 flex items-center justify-between border-b border-slate-900">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center font-extrabold text-slate-950 shadow-lg shadow-emerald-500/20">S</div>
+            <span class="font-extrabold tracking-wider text-sm uppercase">SHACK STORE</span>
+        </div>
+        <span class="text-[10px] bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-full text-emerald-400 font-mono">v2.5 PRO</span>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-xl mx-auto w-full px-4 py-6 space-y-5 flex-grow">
         
-        <!-- Top Announcement Banner -->
-        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-b border-emerald-500/20 py-2 px-4 backdrop-blur-md">
-            <div class="max-w-xl mx-auto flex items-center justify-between text-[11px]">
-                <div class="flex items-center space-x-2">
-                    <span class="flex h-2 w-2 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span class="text-emerald-400 font-bold tracking-wider uppercase">RESTOCK LIVE</span>
-                    <span class="text-slate-400 hidden sm:inline">• Nouveaux comptes ajoutés aujourd'hui !</span>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <span class="text-slate-400 font-mono text-[10px]">RAZ Stock dans: <span id="countdown" class="text-slate-200 font-bold">04h 12m</span></span>
-                </div>
+        <div>
+            <h1 class="text-xl font-bold text-white tracking-tight">Services Disponibles</h1>
+            <p class="text-xs text-slate-400 mt-0.5">Appuie sur une carte pour sélectionner ton service.</p>
+        </div>
+
+        <!-- Grille des stocks interactive -->
+        <div id="servicesGrid" class="grid grid-cols-2 gap-3">
+            <div class="col-span-2 text-center py-6 glass-panel rounded-2xl text-xs text-slate-400">Chargement des stocks...</div>
+        </div>
+
+        <!-- Panneau de génération -->
+        <div class="glass-panel rounded-2xl p-5 shadow-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection active</span>
+                <span id="selectedServiceBadge" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">AUCUN</span>
+            </div>
+
+            <button onclick="generateAccount()" id="genBtn" disabled class="w-full bg-slate-800 text-slate-500 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-not-allowed transition">
+                Choisis un service
+            </button>
+
+            <!-- Résultat -->
+            <div id="resultBox" class="hidden mt-4 bg-slate-950 border border-emerald-500/40 rounded-xl p-4">
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded uppercase">Succès</span>
+                <div id="accountText" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 my-2 font-mono text-xs text-emerald-300 select-all break-all"></div>
+                <button onclick="copyAccount()" class="w-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-xs font-semibold py-2.5 rounded-lg">Copier l'identifiant</button>
+            </div>
+
+            <div id="errorBox" class="hidden mt-4 bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 text-center text-xs text-rose-300"></div>
+        </div>
+
+        <!-- Live Activity Feed -->
+        <div class="glass-panel rounded-2xl p-4 border border-slate-800/60">
+            <div class="flex items-center space-x-2 mb-3">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Flux d'activité en direct</span>
+            </div>
+            <div id="activityList" class="space-y-2 max-h-32 overflow-y-auto scrollbar-none text-xs">
+                <div class="text-slate-500 text-center py-2">En attente de générations...</div>
             </div>
         </div>
 
-        <!-- Header -->
-        <header class="max-w-xl mx-auto w-full px-4 py-5 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-bold text-slate-950 text-lg shadow-lg shadow-emerald-500/20 tracking-tighter">
-                    S
-                </div>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-extrabold text-base tracking-tight text-white uppercase">SHACK</span>
-                        <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">v2.0</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400">Plateforme Générateur Haute Qualité</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <div class="px-3 py-1.5 rounded-xl glass-card text-[11px] text-slate-300 font-mono flex items-center space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>Statut: <strong class="text-emerald-400">Opérationnel</strong></span>
-                </div>
-            </div>
-        </header>
+    </main>
 
-        <!-- Main Content -->
-        <main class="max-w-xl mx-auto w-full px-4 py-2 flex-grow flex flex-col justify-center space-y-6">
-
-            <!-- Title Section -->
-            <div>
-                <h1 class="text-2xl font-extrabold text-white tracking-tight flex items-center space-x-2">
-                    <span>Sélectionnez un Service</span>
-                </h1>
-                <p class="text-xs text-slate-400 mt-1">Cliquez sur une carte pour charger le service et générer votre accès instantanément.</p>
-            </div>
-
-            <!-- Grid Stock Display -->
-            <div id="servicesGrid" class="grid grid-cols-2 gap-3">
-                <div class="col-span-2 text-center py-8 glass-panel rounded-2xl text-xs text-slate-400">
-                    Chargement des services en direct...
-                </div>
-            </div>
-
-            <!-- Active Generation Panel -->
-            <div class="glass-panel rounded-2xl p-5 shadow-2xl relative overflow-hidden border border-slate-800">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Service Sélectionné</span>
-                    <span id="selectedServiceBadge" class="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">AUCUN</span>
-                </div>
-
-                <button onclick="generateAccount()" id="genBtn" disabled class="w-full bg-slate-800 text-slate-500 font-bold py-3.5 rounded-xl transition duration-200 text-xs uppercase tracking-wider shadow-lg opacity-60 cursor-not-allowed">
-                    Sélectionnez un service d'abord
-                </button>
-
-                <!-- Account Result Output -->
-                <div id="resultBox" class="hidden mt-4 bg-slate-950/90 border border-emerald-500/40 rounded-xl p-4 transition-all duration-300">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono font-bold px-2 py-0.5 rounded uppercase tracking-wider">Compte Généré avec succès</span>
-                        <span id="resultServiceLabel" class="text-[10px] text-slate-400 uppercase font-mono"></span>
-                    </div>
-                    <div id="accountText" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 my-2 font-mono text-xs text-emerald-300 select-all break-all shadow-inner"></div>
-                    <button onclick="copyAccount()" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold py-2.5 rounded-lg transition flex items-center justify-center space-x-2">
-                        <span>📋 Copier l'identifiant</span>
-                    </button>
-                </div>
-
-                <!-- Error Message -->
-                <div id="errorBox" class="hidden mt-4 bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 text-center text-xs text-rose-300 font-medium"></div>
-            </div>
-
-            <!-- Live Activity Feed -->
-            <div class="glass-panel rounded-2xl p-4 border border-slate-800/80">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                        <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Activité Récente en Direct</span>
-                    </div>
-                    <span class="text-[10px] text-slate-500 font-mono">Générations publiques</span>
-                </div>
-                <div id="activityList" class="space-y-2 max-h-36 overflow-y-auto scrollbar-none">
-                    <!-- Activities inserted dynamically -->
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="max-w-xl mx-auto w-full px-4 py-6 text-center border-t border-slate-900/80">
-            <p class="text-xs text-slate-500 font-medium">
-                Propulsé par le système <span class="text-slate-300 font-bold">Shack</span> • 100% Automatisé
-            </p>
-        </footer>
-
-    </div>
+    <footer class="max-w-xl mx-auto w-full text-center py-4 border-t border-slate-900 text-[11px] text-slate-500">
+        Shack System • Tous droits réservés
+    </footer>
 
     <script>
-        let currentSelectedService = null;
-        let stockData = {};
+        let currentService = null;
 
-        // Countdown timer simulation
-        function startCountdown() {
-            let totalSeconds = 15120;
+        function startTimer() {
+            let t = 14200;
             setInterval(() => {
-                if (totalSeconds <= 0) totalSeconds = 15120;
-                totalSeconds--;
-                const h = Math.floor(totalSeconds / 3600);
-                const m = Math.floor((totalSeconds % 3600) / 60);
+                t = t > 0 ? t - 1 : 14200;
+                let h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60);
+                document.getElementById('countdown').textContent = `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
+            }, 1000);
+        }
+
+        async function fetchStock() {
+            try {
+                const res = await fetch('/api/stock');
+                const data = await res.json();
+                const grid = document.getElementById('servicesGrid');
+                grid.innerHTML = '';
+
+                const keys = Object.keys(data);
+                if (keys.length === 0) {
+                    grid.innerHTML = '<div class="col-span-2 text-center py-6 glass-panel rounded-2xl text-xs text-slate-400">Aucun stock disponible</div>';
+                    return;
+                }
+
+                keys.forEach(service => {
+                    const count = data[service].count;
+                    const isSelected = currentService === service;
+                    const card = document.createElement('div');
+                    card.className = `glass-card p-3.5 rounded-2xl cursor-pointer ${isSelected ? 'border-emerald-500 bg-emerald-500/10' : ''}`;
+                    card.onclick = () => { if(count > 0) selectService(service); };
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-sm capitalize text-white">${service}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${count > 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${count} dispo</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full" style="width: ${Math.min(count * 10, 100)}%"></div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        function selectService(service) {
+            currentService = service;
+            document.getElementById('selectedServiceBadge').textContent = service.toUpperCase();
+            const btn = document.getElementById('genBtn');
+            btn.disabled = false;
+            btn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition";
+            btn.textContent = `Générer (${service.toUpperCase()})`;
+            fetchStock();
+        }
+
+        async function generateAccount() {
+            if (!currentService) return;
+            const res = await fetch('/api/gen', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ service: currentService })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                document.getElementById('errorBox').textContent = data.error;
+                document.getElementById('errorBox').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('accountText').textContent = data.account;
+            document.getElementById('resultBox').classList.remove('hidden');
+            
+            // Ajout flux en direct
+            const list = document.getElementById('activityList');
+            if(list.children.length === 1 && list.children[0].tagName === 'DIV' && list.children[0].classList.contains('text-slate-500')) list.innerHTML = '';
+            const item = document.createElement('div');
+            item.className = "flex justify-between text-slate-300 py-1 border-b border-slate-900";
+            item.innerHTML = `<span>Génération <b>${data.service}</b></span> <span class="text-emerald-400 font-mono">À l'instant</span>`;
+            list.insertBefore(item, list.firstChild);
+
+            fetchStock();
+        }
+
+        function copyAccount() {
+            navigator.clipboard.writeText(document.getElementById('accountText').textContent);
+            alert("Copié !");
+        }
+
+        startTimer();
+        fetchStock();
+    </script>
+</body>
+</html>
+3600) / 60);
                 document.getElementById('countdown').textContent = `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
             }, 1000);
         }
