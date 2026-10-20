@@ -3,31 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shack • Ultimate Generator</title>
+    <title>Shack • Store & Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.2s ease; }
-        .glass-card:hover { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.2); }
-        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .glass-card:hover { border-color: rgba(16, 185, 129, 0.4); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- Bannière haut -->
+    <!-- Bannière Restock -->
     <div class="bg-emerald-950/60 border-b border-emerald-500/20 py-2 px-4">
-        <div class="max-w-xl mx-auto flex items-center justify-between text-[11px]">
+        <div class="max-w-md mx-auto flex items-center justify-between text-[11px]">
             <div class="flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                 <span class="text-emerald-400 font-bold uppercase tracking-wider">RESTOCK ACTIF</span>
@@ -37,7 +27,7 @@
     </div>
 
     <!-- Header -->
-    <header class="max-w-xl mx-auto w-full px-4 py-4 flex items-center justify-between border-b border-slate-900">
+    <header class="max-w-md mx-auto w-full px-4 py-4 flex items-center justify-between border-b border-slate-900">
         <div class="flex items-center space-x-2.5">
             <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center font-extrabold text-slate-950 shadow-lg shadow-emerald-500/20">S</div>
             <span class="font-extrabold tracking-wider text-sm uppercase">SHACK STORE</span>
@@ -45,28 +35,28 @@
         <span class="text-[10px] bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-full text-emerald-400 font-mono">v2.5 PRO</span>
     </header>
 
-    <!-- Main -->
-    <main class="max-w-xl mx-auto w-full px-4 py-6 space-y-5 flex-grow">
+    <!-- Content -->
+    <main class="max-w-md mx-auto w-full px-4 py-6 space-y-5 flex-grow">
         
         <div>
             <h1 class="text-xl font-bold text-white tracking-tight">Services Disponibles</h1>
-            <p class="text-xs text-slate-400 mt-0.5">Appuie sur une carte pour sélectionner ton service.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Clique sur un service ci-dessous pour générer.</p>
         </div>
 
-        <!-- Grille des stocks interactive -->
+        <!-- Grille de stock -->
         <div id="servicesGrid" class="grid grid-cols-2 gap-3">
             <div class="col-span-2 text-center py-6 glass-panel rounded-2xl text-xs text-slate-400">Chargement des stocks...</div>
         </div>
 
-        <!-- Panneau de génération -->
+        <!-- Panneau de sélection & Génération -->
         <div class="glass-panel rounded-2xl p-5 shadow-2xl border border-slate-800">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection active</span>
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection</span>
                 <span id="selectedServiceBadge" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">AUCUN</span>
             </div>
 
             <button onclick="generateAccount()" id="genBtn" disabled class="w-full bg-slate-800 text-slate-500 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-not-allowed transition">
-                Choisis un service
+                Sélectionne un service
             </button>
 
             <!-- Résultat -->
@@ -79,20 +69,20 @@
             <div id="errorBox" class="hidden mt-4 bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 text-center text-xs text-rose-300"></div>
         </div>
 
-        <!-- Live Activity Feed -->
+        <!-- Flux d'activité -->
         <div class="glass-panel rounded-2xl p-4 border border-slate-800/60">
             <div class="flex items-center space-x-2 mb-3">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Flux d'activité en direct</span>
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Activité récente</span>
             </div>
-            <div id="activityList" class="space-y-2 max-h-32 overflow-y-auto scrollbar-none text-xs">
+            <div id="activityList" class="space-y-2 max-h-32 overflow-y-auto text-xs">
                 <div class="text-slate-500 text-center py-2">En attente de générations...</div>
             </div>
         </div>
 
     </main>
 
-    <footer class="max-w-xl mx-auto w-full text-center py-4 border-t border-slate-900 text-[11px] text-slate-500">
+    <footer class="max-w-md mx-auto w-full text-center py-4 border-t border-slate-900 text-[11px] text-slate-500">
         Shack System • Tous droits réservés
     </footer>
 
@@ -117,7 +107,7 @@
 
                 const keys = Object.keys(data);
                 if (keys.length === 0) {
-                    grid.innerHTML = '<div class="col-span-2 text-center py-6 glass-panel rounded-2xl text-xs text-slate-400">Aucun stock disponible</div>';
+                    grid.innerHTML = '<div class="col-span-2 text-center py-6 glass-panel rounded-2xl text-xs text-slate-400">Aucun stock dans stock.json</div>';
                     return;
                 }
 
@@ -147,8 +137,8 @@
             document.getElementById('selectedServiceBadge').textContent = service.toUpperCase();
             const btn = document.getElementById('genBtn');
             btn.disabled = false;
-            btn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition";
-            btn.textContent = `Générer (${service.toUpperCase()})`;
+            btn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition cursor-pointer";
+            btn.textContent = `GÉNÉRER (${service.toUpperCase()})`;
             fetchStock();
         }
 
@@ -168,12 +158,11 @@
             document.getElementById('accountText').textContent = data.account;
             document.getElementById('resultBox').classList.remove('hidden');
             
-            // Ajout flux en direct
             const list = document.getElementById('activityList');
-            if(list.children.length === 1 && list.children[0].tagName === 'DIV' && list.children[0].classList.contains('text-slate-500')) list.innerHTML = '';
+            if(list.children.length === 1 && list.children[0].classList.contains('text-slate-500')) list.innerHTML = '';
             const item = document.createElement('div');
             item.className = "flex justify-between text-slate-300 py-1 border-b border-slate-900";
-            item.innerHTML = `<span>Génération <b>${data.service}</b></span> <span class="text-emerald-400 font-mono">À l'instant</span>`;
+            item.innerHTML = `<span>Compte <b>${data.service}</b> généré</span> <span class="text-emerald-400 font-mono">À l'instant</span>`;
             list.insertBefore(item, list.firstChild);
 
             fetchStock();
@@ -186,167 +175,6 @@
 
         startTimer();
         fetchStock();
-    </script>
-</body>
-</html>
-3600) / 60);
-                document.getElementById('countdown').textContent = `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
-            }, 1000);
-        }
-
-        // Service icons mapping
-        function getServiceIcon(service) {
-            const name = service.toLowerCase();
-            if (name.includes('netflix')) return '🍿';
-            if (name.includes('spotify')) return '🎵';
-            if (name.includes('disney')) return '✨';
-            if (name.includes('crunchyroll')) return '🦊';
-            if (name.includes('nordvpn') || name.includes('vpn')) return '🛡️';
-            if (name.includes('steam')) return '🎮';
-            return '⚡';
-        }
-
-        async function fetchStock() {
-            try {
-                const res = await fetch('/api/stock');
-                stockData = await res.json();
-                const grid = document.getElementById('servicesGrid');
-                grid.innerHTML = '';
-
-                const services = Object.keys(stockData);
-
-                if (services.length === 0) {
-                    grid.innerHTML = `
-                        <div class="col-span-2 text-center py-8 glass-panel rounded-2xl text-xs text-slate-400">
-                            Aucun service ou stock disponible actuellement.
-                        </div>
-                    `;
-                    return;
-                }
-
-                services.forEach(service => {
-                    const count = stockData[service].count;
-                    const isAvailable = count > 0;
-                    const isSelected = currentSelectedService === service;
-
-                    const card = document.createElement('div');
-                    card.className = `glass-card p-4 rounded-2xl cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between ${isSelected ? 'border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500' : ''} ${!isAvailable ? 'opacity-50 cursor-not-allowed' : ''}`;
-                    
-                    card.onclick = () => {
-                        if (isAvailable) selectService(service);
-                    };
-
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-xl">${getServiceIcon(service)}</span>
-                            <span class="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full ${isAvailable ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
-                                ${isAvailable ? 'EN STOCK' : 'ÉPUISÉ'}
-                            </span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white capitalize tracking-wide">${service}</h3>
-                            <p class="text-[11px] text-slate-400 font-mono mt-0.5">${count} dispo</p>
-                        </div>
-                        <div class="w-full bg-slate-900 h-1.5 rounded-full mt-3 overflow-hidden border border-slate-800">
-                            <div class="bg-emerald-500 h-full transition-all duration-500" style="width: ${Math.min((count / 20) * 100, 100)}%"></div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        function selectService(service) {
-            currentSelectedService = service;
-            document.getElementById('selectedServiceBadge').textContent = service.toUpperCase();
-            
-            const btn = document.getElementById('genBtn');
-            btn.disabled = false;
-            btn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3.5 rounded-xl transition duration-200 text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/25 active:scale-[0.98] cursor-pointer";
-            btn.textContent = `GÉNÉRER UN COMPTE ${service.toUpperCase()}`;
-
-            fetchStock();
-        }
-
-        async function generateAccount() {
-            if (!currentSelectedService) return;
-
-            const resultBox = document.getElementById('resultBox');
-            const errorBox = document.getElementById('errorBox');
-            const genBtn = document.getElementById('genBtn');
-
-            resultBox.classList.add('hidden');
-            errorBox.classList.add('hidden');
-
-            genBtn.disabled = true;
-            genBtn.textContent = "Génération en cours...";
-
-            try {
-                const res = await fetch('/api/gen', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ service: currentSelectedService })
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    errorBox.textContent = data.error || "Erreur de génération.";
-                    errorBox.classList.remove('hidden');
-                    return;
-                }
-
-                document.getElementById('resultServiceLabel').textContent = data.service;
-                document.getElementById('accountText').textContent = data.account;
-                resultBox.classList.remove('hidden');
-
-                // Add to live activity feed
-                addActivityItem(data.service);
-
-                fetchStock();
-            } catch (e) {
-                errorBox.textContent = "Erreur de connexion avec le serveur.";
-                errorBox.classList.remove('hidden');
-            } finally {
-                genBtn.disabled = false;
-                genBtn.textContent = `GÉNÉRER UN COMPTE ${currentSelectedService.toUpperCase()}`;
-            }
-        }
-
-        function copyAccount() {
-            const text = document.getElementById('accountText').textContent;
-            navigator.clipboard.writeText(text);
-            alert("Identifiants copié dans le presse-papier !");
-        }
-
-        // Activity Feed Simulation
-        const mockUsers = ['Utilisateur#4829', 'Anonyme', 'Membre#1029', 'Client#7723', 'ShackUser'];
-        
-        function addActivityItem(serviceName) {
-            const list = document.getElementById('activityList');
-            const user = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-            const item = document.createElement('div');
-            item.className = "flex items-center justify-between text-xs py-2 px-3 bg-slate-900/60 border border-slate-800/60 rounded-xl transition-all duration-300 animate-in fade-in";
-            
-            item.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs">${getServiceIcon(serviceName)}</span>
-                    <span class="text-slate-300 font-medium">${user}</span>
-                    <span class="text-slate-500">a généré</span>
-                    <span class="text-emerald-400 font-bold uppercase font-mono">${serviceName}</span>
-                </div>
-                <span class="text-[10px] text-slate-500 font-mono">À l'instant</span>
-            `;
-            list.insertBefore(item, list.firstChild);
-            if (list.children.length > 5) list.removeChild(list.lastChild);
-        }
-
-        // Initialize
-        startCountdown();
-        fetchStock();
-        setInterval(fetchStock, 10000); // Auto-refresh stock every 10s
     </script>
 </body>
 </html>
