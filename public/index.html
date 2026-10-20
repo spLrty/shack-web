@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shack Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-4 font-sans">
+
+    <!-- Header -->
+    <header class="max-w-md mx-auto w-full py-6 text-center border-b border-slate-800">
+        <h1 class="text-2xl font-bold tracking-tight text-emerald-400">Shack Generator</h1>
+        <p class="text-xs text-slate-400 mt-1">Plateforme officielle de génération de comptes</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto w-full my-auto py-8">
+        
+        <!-- Carte de sélection -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <label for="serviceSelect" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Service disponible</label>
+            
+            <select id="serviceSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 mb-4">
+                <option value="">Chargement des services...</option>
+            </select>
+
+            <button onclick="generateAccount()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold py-3 rounded-xl transition duration-200 text-sm shadow-lg shadow-emerald-500/10">
+                Générer un compte
+            </button>
+        </div>
+
+        <!-- Résultat de la génération -->
+        <div id="resultBox" class="hidden mt-6 bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 text-center">
+            <span class="text-xs text-emerald-400 font-medium uppercase tracking-wider">Compte livré</span>
+            <div id="accountText" class="bg-slate-950 border border-slate-800 rounded-xl p-3 my-3 font-mono text-xs text-slate-200 select-all break-all"></div>
+            <button onclick="copyAccount()" class="text-xs text-slate-400 hover:text-slate-200 underline">Copier l'identifiant</button>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="errorBox" class="hidden mt-6 bg-rose-950/40 border border-rose-500/30 rounded-2xl p-4 text-center text-xs text-rose-300"></div>
+
+    </main>
+
+    <!-- Footer Signature -->
+    <footer class="max-w-md mx-auto w-full text-center py-4 border-t border-slate-800/50">
+        <p class="text-xs text-slate-500">Shack • Gen System v2.0</p>
+    </footer>
+
+    <script>
+        async function fetchStock() {
+            try {
+                const res = await fetch('/api/stock');
+                const data = await res.json();
+                const select = document.getElementById('serviceSelect');
+                select.innerHTML = '';
+
+                const keys = Object.keys(data);
+                if (keys.length === 0) {
+                    select.innerHTML = '<option value="">Aucun service disponible</option>';
+                    return;
+                }
+
+                keys.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service;
+                    option.textContent = `${service.toUpperCase()} (${data[service].count} dispo)`;
+                    select.appendChild(option);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function generateAccount() {
+            const service = document.getElementById('serviceSelect').value;
+            const resultBox = document.getElementById('resultBox');
+            const errorBox = document.getElementById('errorBox');
+
+            resultBox.classList.add('hidden');
+            errorBox.classList.add('hidden');
+
+            if (!service) {
+                errorBox.textContent = "Veuillez sélectionner un service.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/gen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ service })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorBox.textContent = data.error || "Erreur lors de la génération.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                document.getElementById('accountText').textContent = data.account;
+                resultBox.classList.remove('hidden');
+                fetchStock(); // Rafraîchir le stock
+            } catch (e) {
+                errorBox.textContent = "Erreur de connexion au serveur.";
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        function copyAccount() {
+            const text = document.getElementById('accountText').textContent;
+            navigator.clipboard.writeText(text);
+            alert("Identifiant copié !");
+        }
+
+        fetchStock();
+    </script>
+</body>
+  </html>
+  
